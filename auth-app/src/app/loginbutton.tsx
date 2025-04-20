@@ -6,7 +6,7 @@ export default function LoginButton() {
   return (
     <button
       onClick={() => signIn("authaction", { callbackUrl: "/dashboard" })}
-      className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-lg"
+      className="px-6 py-3 bg-black hover:bg-blue-700 text-white rounded-lg shadow-lg"
     >
       Login
     </button>
