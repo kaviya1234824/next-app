@@ -1,10 +1,11 @@
 "use client";
-import { useEffect, useState } from "react";
-import { signOut } from "next-auth/react";
+import { useCallback, useEffect, useState } from "react";
+import { signOut, useSession } from "next-auth/react";
 import Image from 'next/image';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 const Dashboard = ({ user }: any) => {
+  const { data: session, status } = useSession();
   const [profileData, setProfileData] = useState<any>(null);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -23,6 +24,21 @@ const Dashboard = ({ user }: any) => {
     setIsOpen(true);
   };
 
+  const handleLogout = () => {
+    const tenantDomain = process.env.NEXT_PUBLIC_AUTHACTION_TENANT_DOMAIN;
+    const postLogoutRedirectUri = process.env.NEXT_PUBLIC_LOGOUT_REDIRECT_URI || "http://localhost:3000";
+
+    if (!tenantDomain || !session?.idToken) {
+      return;
+    }
+    const logoutUrl = `https://${tenantDomain}/oauth2/logout?id_token_hint=${session.idToken}&post_logout_redirect_uri=${encodeURIComponent(postLogoutRedirectUri)}`;
+    signOut({
+      redirect: false,
+    }).then(() => {
+      window.location.href = logoutUrl;
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 text-black">
       <header className="bg-white shadow">
@@ -34,7 +50,7 @@ const Dashboard = ({ user }: any) => {
             <a href="#" className="text-blue-600 hover:underline">About</a>
           </nav>
           <button
-            onClick={() => signOut({ callbackUrl: "/" })}
+            onClick={handleLogout}
             className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg"
           >
             Log Out
