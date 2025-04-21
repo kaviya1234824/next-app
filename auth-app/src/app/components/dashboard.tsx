@@ -26,7 +26,7 @@ const Dashboard = ({ user }: any) => {
 
   const handleLogout = () => {
     const tenantDomain = process.env.NEXT_PUBLIC_AUTHACTION_TENANT_DOMAIN;
-    const postLogoutRedirectUri = process.env.NEXT_PUBLIC_LOGOUT_REDIRECT_URI || "http://localhost:3000";
+    const postLogoutRedirectUri = `${window.location.origin}`;
 
     if (!tenantDomain || !session?.idToken) {
       return;
